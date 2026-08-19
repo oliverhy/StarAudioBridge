@@ -66,6 +66,7 @@ export class AudioBridgeClient {
   private mediaPort: number = Proto.DEFAULT_MEDIA_PORT;
   private pc2phone: boolean = true;
   private phone2pc: boolean = false;
+  private echoProtection: boolean = true;
 
   private pingSeq: number = 0;
   private lastPingTs: number = 0;
@@ -175,9 +176,10 @@ export class AudioBridgeClient {
 
   /** 更新方向开关 (播放电脑声音 / 手机当麦克风)。 */
   async setDirections(pc2phone: boolean, phone2pc: boolean): Promise<void> {
-    const audioModeChanged: boolean = this.phone2pc !== phone2pc;
+    const previousVoiceMode: boolean = this.phone2pc && this.echoProtection;
     this.pc2phone = pc2phone;
     this.phone2pc = phone2pc;
+    const audioModeChanged: boolean = previousVoiceMode !== (this.phone2pc && this.echoProtection);
     if (this.state === BridgeState.STREAMING) {
       this.sendStart();
       // AudioRenderer 的音乐/通话 usage 创建后不可原地切换。
@@ -194,6 +196,30 @@ export class AudioBridgeClient {
         await this.stopMic();
       }
     }
+  }
+
+  /** 双向音频策略：开启时优先 AEC/防回声，关闭时优先音乐播放音质。 */
+  async setEchoProtection(enabled: boolean): Promise<void> {
+    if (this.echoProtection === enabled) {
+      return;
+    }
+    this.echoProtection = enabled;
+    if (this.state !== BridgeState.STREAMING || !this.phone2pc) {
+      return;
+    }
+
+    // 播放和采集的 usage/source 都是在创建时确定，切换策略时需要重建。
+    if (this.playerStarted) {
+      await this.stopPlayer();
+      if (this.pc2phone) {
+        await this.startPlayer();
+      }
+    }
+    await this.stopMic();
+    await this.ensureMic();
+    this.log(enabled
+      ? '双向模式: 防回声优先 (通话链路/AEC/听筒优先)'
+      : '双向模式: 音质优先 (音乐链路/扬声器，建议使用耳机)');
   }
 
   /** 保持屏幕常亮 (后台长时任务被系统拒绝时的临时保底方案)。 */
@@ -342,9 +368,10 @@ export class AudioBridgeClient {
     }
     this.playerStarted = true;
     try {
-      this.player = new PcmPlayer(this.jitter, this.phone2pc);
+      const voiceMode: boolean = this.phone2pc && this.echoProtection;
+      this.player = new PcmPlayer(this.jitter, voiceMode);
       await this.player.start();
-      this.log(this.phone2pc
+      this.log(voiceMode
         ? '播放器已启动 (通话模式/AEC/听筒优先)'
         : '播放器已启动 (低延迟音乐模式)');
     } catch (err) {
@@ -386,7 +413,7 @@ export class AudioBridgeClient {
     }
     this.mic = new MicCapturer((buf: ArrayBuffer): void => {
       this.sendMicPacket(buf);
-    });
+    }, this.echoProtection);
     try {
       await this.mic.start();
       this.log('麦克风采集已启动');

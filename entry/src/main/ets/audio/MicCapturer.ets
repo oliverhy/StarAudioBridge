@@ -12,9 +12,11 @@ export class MicCapturer {
   private capturer: audio.AudioCapturer | undefined = undefined;
   private running: boolean = false;
   private readonly onPcm: (buf: ArrayBuffer) => void;
+  private readonly voiceCommunication: boolean;
 
-  constructor(onPcm: (buf: ArrayBuffer) => void) {
+  constructor(onPcm: (buf: ArrayBuffer) => void, voiceCommunication: boolean = true) {
     this.onPcm = onPcm;
+    this.voiceCommunication = voiceCommunication;
   }
 
   get state(): string {
@@ -35,8 +37,11 @@ export class MicCapturer {
           encodingType: audio.AudioEncodingType.ENCODING_TYPE_RAW
         },
         capturerInfo: {
-          // 使用网络语音通话源，让系统启用通话场景的 AEC/降噪/自动增益链路。
-          source: audio.SourceType.SOURCE_TYPE_VOICE_COMMUNICATION,
+          // 防回声模式使用系统 AEC/降噪/自动增益；音质模式使用普通麦克风，
+          // 避免通话链路改变同时播放的电脑声音。
+          source: this.voiceCommunication
+            ? audio.SourceType.SOURCE_TYPE_VOICE_COMMUNICATION
+            : audio.SourceType.SOURCE_TYPE_MIC,
           capturerFlags: 0
         }
       };
@@ -48,7 +53,8 @@ export class MicCapturer {
       });
       await this.capturer.start();
       this.running = true;
-      hilog.info(DOMAIN, TAG, 'MicCapturer started (48kHz mono)');
+      hilog.info(DOMAIN, TAG, 'MicCapturer started (48kHz mono, voiceCommunication=%{public}s)',
+        this.voiceCommunication.toString());
     } catch (err) {
       hilog.error(DOMAIN, TAG, 'MicCapturer start failed: %{public}s', JSON.stringify(err));
       throw new Error('MicCapturer start failed: ' + JSON.stringify(err));
