@@ -11,8 +11,8 @@ import { DiscoveredHost, MdnsDiscovery } from '../net/MdnsDiscovery';
 import { Proto } from '../model/Protocol';
 
 const MAX_LOG: number = 60;
-const APP_VERSION: string = '1.0.0';
-const APP_VERSION_CODE: string = '1000000';
+const APP_VERSION: string = '1.0.1';
+const APP_VERSION_CODE: string = '1000001';
 const APP_BUNDLE: string = 'com.yinhe.staraudiobridge';
 const SUPPORT_EMAIL: string = '39323856@qq.com';
 
@@ -25,6 +25,7 @@ struct Index {
   @State connected: boolean = false;
   @State pc2phone: boolean = true;
   @State phone2pc: boolean = false;
+  @State echoProtection: boolean = true;
   @State keepScreenOn: boolean = false;
   @State prebuffer: number = 24;
   @State statusText: string = '未连接';
@@ -38,7 +39,7 @@ struct Index {
   private discovery: MdnsDiscovery | undefined = undefined;
 
   aboutToAppear(): void {
-    this.appendLog('StarAudioBridge v0.1 — UDP 低延迟音频桥');
+    this.appendLog('StarAudioBridge v1.0.1 — UDP 低延迟音频桥');
     this.appendLog('可点「自动发现电脑」找到 PC, 或手动输入 IP 连接');
   }
 
@@ -176,6 +177,32 @@ struct Index {
         Text(this.phone2pc ? '手机 → PC' : '关闭')
           .fontSize(13)
           .fontColor(this.phone2pc ? '#1a6bff' : '#999999')
+      }
+      .width('92%')
+
+      // 双向开启时可在音乐音质和系统防回声链路之间选择。
+      Column({ space: 4 }) {
+        Row({ space: 8 }) {
+          Toggle({ type: ToggleType.Switch, isOn: this.echoProtection })
+            .onChange((on: boolean): void => {
+              this.echoProtection = on;
+              this.applyEchoProtection();
+            })
+          Text('双向音频模式')
+            .layoutWeight(1)
+            .fontSize(14)
+          Text(this.echoProtection ? '防回声优先' : '音质优先')
+            .fontSize(13)
+            .fontColor(this.echoProtection ? '#00a862' : '#1a6bff')
+        }
+        .width('100%')
+
+        Text(this.echoProtection
+          ? '适合手机外放：通话链路与听筒优先，回声更少，音乐音质会降低'
+          : '适合耳机：保持 48kHz 双声道音乐链路；手机外放时可能产生回声')
+          .fontSize(12)
+          .fontColor('#777777')
+          .width('100%')
       }
       .width('92%')
 
@@ -362,6 +389,7 @@ struct Index {
       const ctx = hostCtx as common.UIAbilityContext;
       const client = new AudioBridgeClient(ctx, this.prebuffer);
       // 同步当前 UI 开关状态到客户端 (否则重连后麦克风/播放开关状态会丢失)
+      client.setEchoProtection(this.echoProtection);
       client.setDirections(this.pc2phone, this.phone2pc);
       this.client = client;
       client.onLog = (msg: string): void => {
@@ -407,6 +435,14 @@ struct Index {
       return;
     }
     client.setDirections(this.pc2phone, this.phone2pc);
+  }
+
+  private applyEchoProtection(): void {
+    const client = this.client;
+    if (client === undefined) {
+      return;
+    }
+    client.setEchoProtection(this.echoProtection);
   }
 
   private startStatsTimer(): void {
