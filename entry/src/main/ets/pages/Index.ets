@@ -15,6 +15,7 @@ const APP_VERSION: string = '1.0.1';
 const APP_VERSION_CODE: string = '1000001';
 const APP_BUNDLE: string = 'com.yinhe.staraudiobridge';
 const SUPPORT_EMAIL: string = '39323856@qq.com';
+const PC_RELEASE_URL: string = 'https://github.com/oliverhy/StarAudioBridge/releases/latest';
 
 @Entry
 @Component
@@ -278,6 +279,35 @@ struct Index {
       .alignListItem(ListItemAlign.Start)
       .scrollBar(BarState.Off)
 
+      // PC 端下载与安装
+      Divider().margin({ top: 6, bottom: 6 })
+      Column({ space: 6 }) {
+        Text('PC 端下载与安装')
+          .fontSize(14)
+          .fontWeight(FontWeight.Medium)
+          .width('100%')
+        Row({ space: 8 }) {
+          Button('GitHub 下载 PC 端')
+            .layoutWeight(1)
+            .height(36)
+            .onClick(() => {
+              this.openPcDownload();
+            })
+          Button('安装说明')
+            .width(100)
+            .height(36)
+            .onClick(() => {
+              this.showPcInstallGuide();
+            })
+        }
+        .width('100%')
+        Text('Windows 10/11 x64 · 自包含 EXE · 无需安装 .NET')
+          .fontSize(12)
+          .fontColor('#777777')
+          .width('100%')
+      }
+      .width('92%')
+
       // 关于
       Divider().margin({ top: 6, bottom: 6 })
       Column({ space: 3 }) {
@@ -312,6 +342,42 @@ struct Index {
   }
 
   // ---------- 逻辑 ----------
+
+  private async openPcDownload(): Promise<void> {
+    const hostCtx = this.getUIContext().getHostContext();
+    if (hostCtx === undefined) {
+      this.appendLog('无法打开 PC 端下载页面');
+      return;
+    }
+    try {
+      await (hostCtx as common.UIAbilityContext).openLink(PC_RELEASE_URL);
+    } catch (err) {
+      this.appendLog('打开 GitHub 失败: ' + JSON.stringify(err));
+    }
+  }
+
+  private showPcInstallGuide(): void {
+    this.getUIContext().showAlertDialog({
+      title: 'PC 端下载与安装',
+      message:
+        '1. 在 Windows 10/11 x64 电脑打开公开的 GitHub Release，直接下载 StarAudioBridge.Server-win-x64-*.exe。\n\n' +
+        '2. 双击运行；若 Windows SmartScreen 提示风险，点“更多信息”→“仍要运行”。\n\n' +
+        '3. Windows 防火墙弹窗中勾选“专用网络”并允许访问。\n\n' +
+        '4. 确保手机与电脑连接同一 Wi-Fi，然后在 App 中点“自动发现电脑”。\n\n' +
+        '5. 手机作电脑麦克风时，在 PC 服务端选择虚拟音频线输出，并在会议或录音软件中选择对应虚拟输入。',
+      primaryButton: {
+        value: '打开 GitHub 下载',
+        action: (): void => {
+          this.openPcDownload();
+        }
+      },
+      secondaryButton: {
+        value: '关闭',
+        action: (): void => {
+        }
+      }
+    });
+  }
 
   // ---------- mDNS 自动发现 ----------
 

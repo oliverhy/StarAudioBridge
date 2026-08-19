@@ -8,6 +8,12 @@ Windows 端**图形界面**服务 (WinForms + 托盘), 负责:
 - **mDNS 自动发现**: 广播 `_star-audio-bridge._tcp`, 手机 App 一键发现
 - **控制通道** (TCP + JSON): 握手 / 启停 / 心跳 RTT
 
+## 直接下载（推荐）
+
+前往 [GitHub Releases](https://github.com/oliverhy/StarAudioBridge/releases/latest) 下载 `StarAudioBridge.Server-win-x64-*.exe`。该文件是 Windows 10/11 x64 自包含版本，双击即可运行，无需安装 .NET Runtime。
+
+若 Windows SmartScreen 出现提示，点「更多信息」→「仍要运行」。首次运行遇到防火墙提示时，勾选「专用网络」并允许访问。
+
 ## 构建与运行
 
 需要 [.NET SDK 8+](https://dotnet.microsoft.com/download) (本机已装 8.0.424):

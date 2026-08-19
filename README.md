@@ -73,7 +73,9 @@ devecocli run --module entry  # 构建+安装+启动到真机
 
 ## 使用
 
-1. PC 端: 见 `PC-Server/README.md` (需 .NET 8 SDK, 当前本机未安装)
+1. PC 端：前往 [GitHub Releases](https://github.com/oliverhy/StarAudioBridge/releases/latest) 下载 `StarAudioBridge.Server-win-x64-*.exe`，双击运行即可，无需安装 .NET Runtime。源码构建说明见 `PC-Server/README.md`
+   - Windows SmartScreen 出现提示时，点「更多信息」→「仍要运行」
+   - 首次运行遇到防火墙提示时，勾选「专用网络」并允许访问
 2. 手机与电脑同一 Wi-Fi:
    - **自动发现 (推荐)**: App 首页点「自动发现电脑」→ 点发现的电脑即自动连接
    - 手动: 输入电脑 IP 连接
