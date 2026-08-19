@@ -14,6 +14,16 @@ Windows 端**图形界面**服务 (WinForms + 托盘), 负责:
 
 若 Windows SmartScreen 出现提示，点「更多信息」→「仍要运行」。首次运行遇到防火墙提示时，勾选「专用网络」并允许访问。
 
+### 轻量版
+
+轻量版 ZIP 约 1 MB，不包含 .NET。完整解压后双击 `StarAudioBridge.Server.exe`，启动器会检测 `.NET 8 Desktop Runtime (x64)`：已安装时直接启动主程序；未安装时显示中文提示，并打开微软官方下载页面。
+
+生成轻量版：
+
+```powershell
+./build-lite.ps1 -Version 1.0.2
+```
+
 ## 构建与运行
 
 需要 [.NET SDK 8+](https://dotnet.microsoft.com/download) (本机已装 8.0.424):
