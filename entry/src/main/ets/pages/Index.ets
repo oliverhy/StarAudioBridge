@@ -11,8 +11,8 @@ import { DiscoveredHost, MdnsDiscovery } from '../net/MdnsDiscovery';
 import { Proto } from '../model/Protocol';
 
 const MAX_LOG: number = 60;
-const APP_VERSION: string = '1.0.1';
-const APP_VERSION_CODE: string = '1000001';
+const APP_VERSION: string = '1.0.2';
+const APP_VERSION_CODE: string = '1000002';
 const APP_BUNDLE: string = 'com.yinhe.staraudiobridge';
 const SUPPORT_EMAIL: string = '39323856@qq.com';
 const PC_RELEASE_URL: string = 'https://github.com/oliverhy/StarAudioBridge/releases/latest';
@@ -40,7 +40,7 @@ struct Index {
   private discovery: MdnsDiscovery | undefined = undefined;
 
   aboutToAppear(): void {
-    this.appendLog('StarAudioBridge v1.0.1 — UDP 低延迟音频桥');
+    this.appendLog('StarAudioBridge v1.0.2 — UDP 低延迟音频桥');
     this.appendLog('可点「自动发现电脑」找到 PC, 或手动输入 IP 连接');
   }
 
@@ -58,7 +58,8 @@ struct Index {
   }
 
   build() {
-    Column({ space: 10 }) {
+    Scroll() {
+      Column({ space: 10 }) {
       // 标题
       Text('StarAudioBridge')
         .fontSize(26)
@@ -264,20 +265,20 @@ struct Index {
         .fontWeight(FontWeight.Medium)
         .width('92%')
 
-      List({ space: 2 }) {
-        ForEach(this.logs, (line: string) => {
-          ListItem() {
-            Text(line)
-              .fontSize(12)
-              .fontColor('#444444')
-              .width('100%')
-          }
-        }, (line: string, idx: number) => `${idx}_${line}`)
-      }
-      .layoutWeight(1)
-      .width('92%')
-      .alignListItem(ListItemAlign.Start)
-      .scrollBar(BarState.Off)
+        List({ space: 2 }) {
+          ForEach(this.logs, (line: string) => {
+            ListItem() {
+              Text(line)
+                .fontSize(12)
+                .fontColor('#444444')
+                .width('100%')
+            }
+          }, (line: string, idx: number) => `${idx}_${line}`)
+        }
+        .height(110)
+        .width('92%')
+        .alignListItem(ListItemAlign.Start)
+        .scrollBar(BarState.Off)
 
       // PC 端下载与安装
       Divider().margin({ top: 6, bottom: 6 })
@@ -335,10 +336,13 @@ struct Index {
       .width('100%')
       .padding({ bottom: 4 })
 
-      Blank().height(12)
+        Blank().height(12)
+      }
+      .width('100%')
     }
     .width('100%')
     .height('100%')
+    .scrollBar(BarState.Auto)
   }
 
   // ---------- 逻辑 ----------
