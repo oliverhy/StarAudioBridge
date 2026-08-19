@@ -1,0 +1,24 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "StarAudioBridge entry module"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "StarAudioBridge"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "StarAudioBridge"
+    },
+    {
+      "name": "mic_permission_reason",
+      "value": "用于将手机麦克风声音实时传输到您的电脑"
+    },
+    {
+      "name": "bg_permission_reason",
+      "value": "用于在锁屏或切后台时持续播放电脑音频"
+    }
+  ]
+}
