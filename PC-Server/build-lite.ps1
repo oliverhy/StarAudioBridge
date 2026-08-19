@@ -10,8 +10,10 @@ $outputDirectory = Join-Path $serverDirectory ("bin\Release\lite-v" + $Version)
 $packageDirectory = Join-Path $outputDirectory "package"
 $archivePath = Join-Path $outputDirectory ("StarAudioBridge.Server-win-x64-lite-" + $Version + ".zip")
 $launcherSource = Join-Path $serverDirectory "LiteLauncher\Program.cs"
-$launcherReadme = Join-Path $serverDirectory "LiteLauncher\README.txt"
+$launcherReadme = Join-Path $serverDirectory "LiteLauncher\使用说明.txt"
 $launcherPath = Join-Path $packageDirectory "StarAudioBridge.Server.exe"
+$appPath = Join-Path $packageDirectory "StarAudioBridge.Server.App.exe"
+$packagedReadme = Join-Path $packageDirectory "使用说明.txt"
 
 $compilerCandidates = @(
     (Join-Path $env:WINDIR "Microsoft.NET\Framework64\v4.0.30319\csc.exe"),
@@ -49,8 +51,8 @@ if ($LASTEXITCODE -ne 0) {
     throw "轻量版启动器编译失败。"
 }
 
-Copy-Item -LiteralPath $launcherReadme -Destination (Join-Path $packageDirectory "README.txt") -Force
-Compress-Archive -Path (Join-Path $packageDirectory "*") -DestinationPath $archivePath -CompressionLevel Optimal -Force
+Copy-Item -LiteralPath $launcherReadme -Destination $packagedReadme -Force
+Compress-Archive -LiteralPath $launcherPath, $appPath, $packagedReadme -DestinationPath $archivePath -CompressionLevel Optimal -Force
 
-Get-Item -LiteralPath $launcherPath, (Join-Path $packageDirectory "StarAudioBridge.Server.App.exe"), $archivePath |
+Get-Item -LiteralPath $launcherPath, $appPath, $packagedReadme, $archivePath |
     Select-Object FullName, Length

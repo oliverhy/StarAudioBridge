@@ -1,0 +1,58 @@
+StarAudioBridge PC 服务端轻量版 v1.0.2
+=======================================
+
+一、文件说明
+
+- StarAudioBridge.Server.exe
+  启动器，请双击这个文件。
+
+- StarAudioBridge.Server.App.exe
+  PC 服务端主程序，由启动器自动调用，请勿单独运行。
+
+- 使用说明.txt
+  当前说明文件。
+
+
+二、首次运行
+
+1. 请先完整解压 ZIP，不要直接在压缩包内运行。
+2. 双击 StarAudioBridge.Server.exe。
+3. 启动器会自动检测 .NET 8 Desktop Runtime (x64)：
+   - 已安装：直接启动 StarAudioBridge PC 服务端。
+   - 未安装：显示中文提示；点击“确定”后打开微软官方下载页面。
+4. 下载并安装 Windows x64 Desktop Runtime 后，重新双击启动器。
+
+微软官方下载：
+https://aka.ms/dotnet-core-applaunch?framework=Microsoft.WindowsDesktop.App&framework_version=8.0.0&arch=x64&rid=win-x64&os=win10
+
+只需安装 Desktop Runtime，不需要安装完整的 .NET SDK。
+
+
+三、Windows 安全提示
+
+- 若 SmartScreen 显示“Windows 已保护你的电脑”，点击“更多信息”→“仍要运行”。
+- 首次运行出现 Windows 防火墙提示时，勾选“专用网络”并允许访问。
+
+
+四、连接手机
+
+1. 确保手机与电脑连接同一个 Wi-Fi/路由器。
+2. 启动 PC 服务端。
+3. 在手机 App 中点击“自动发现电脑”。
+4. 点击发现的电脑即可连接；若发现失败，也可以手动输入电脑局域网 IP。
+
+默认端口：TCP 59301、UDP 59302。
+
+
+五、手机作为电脑麦克风
+
+Windows 普通应用不能直接创建系统麦克风设备。建议安装虚拟音频线，并在 PC 服务端选择虚拟音频线作为“手机麦克风输出”，再在会议、直播或录音软件中选择对应的虚拟输入设备。
+
+不要把手机麦克风直接输出到电脑扬声器，否则容易产生延迟耳返和回声。
+
+
+六、帮助与反馈
+
+项目主页：https://github.com/oliverhy/StarAudioBridge
+问题反馈：请在 GitHub 提交 Issue
+联系邮箱：39323856@qq.com
