@@ -1,8 +1,15 @@
 # StarAudioBridge — 鸿蒙端「电脑音频随身听 + 随身麦克风」
 
-> bundle: `com.yinhe.staraudiobridge` · API 24 (HarmonyOS 6.1.1) · DevEco/hvigor 6.24
+> 最新版本：`v1.0.1` · bundle: `com.yinhe.staraudiobridge` · API 24 (HarmonyOS 6.1.1) · DevEco/hvigor 6.24
 > 一句话: **不挑电脑的跨端音频桥** —— 任意 Windows PC 装个小服务, 鸿蒙手机扫码/输 IP 即连:
 > 手机当无线音箱放电脑声音、当无线麦克风给电脑说话; 手机已配对的蓝牙耳机自动接管输出。
+
+## v1.0.1 更新
+
+- 新增「防回声优先 / 音质优先」双向音频模式，可在连接期间即时切换。
+- 防回声优先继续使用系统通话链路、AEC 和听筒路由，适合手机外放。
+- 音质优先保持 48kHz 双声道音乐链路，适合耳机或无声学回授的场景。
+- Windows 服务端提供自包含单文件 EXE，无需额外安装 .NET 运行时。
 
 ## 项目结构
 

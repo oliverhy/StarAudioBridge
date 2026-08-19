@@ -11,8 +11,8 @@ import { DiscoveredHost, MdnsDiscovery } from '../net/MdnsDiscovery';
 import { Proto } from '../model/Protocol';
 
 const MAX_LOG: number = 60;
-const APP_VERSION: string = '1.0.0';
-const APP_VERSION_CODE: string = '1000000';
+const APP_VERSION: string = '1.0.1';
+const APP_VERSION_CODE: string = '1000001';
 const APP_BUNDLE: string = 'com.yinhe.staraudiobridge';
 const SUPPORT_EMAIL: string = '39323856@qq.com';
 
@@ -39,7 +39,7 @@ struct Index {
   private discovery: MdnsDiscovery | undefined = undefined;
 
   aboutToAppear(): void {
-    this.appendLog('StarAudioBridge v0.1 — UDP 低延迟音频桥');
+    this.appendLog('StarAudioBridge v1.0.1 — UDP 低延迟音频桥');
     this.appendLog('可点「自动发现电脑」找到 PC, 或手动输入 IP 连接');
   }
 
